@@ -1,8 +1,11 @@
 
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import SubmissionCard from './SubmissionCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSubmissionsByTaskId } from '../../../ReduxToolKit/SubmissionSlice';
+import store from '../../../ReduxToolKit/Store';
+import { useEffect } from 'react';
 
 const style = {
   position: 'absolute',
@@ -16,9 +19,22 @@ const style = {
   p: 4,
 };
 
-const submissions=[1,1,1];
 
-export default function SubmissionList({handleClose,open}) {
+export default function SubmissionList({item,handleClose,open}) {
+  const {submission}=useSelector(store=>store);
+
+
+
+  
+  const dispatch=useDispatch();
+  useEffect(()=>{
+    if(item.id){
+      dispatch(fetchSubmissionsByTaskId(item.id));
+    }
+  },[item.id])
+
+
+
 
   return (
     <div>
@@ -31,8 +47,8 @@ export default function SubmissionList({handleClose,open}) {
         <Box sx={style}>
             <div>
                 {
-                    submissions.length>0? <div className='space-y-2'>
-                        {submissions.map((item)=><SubmissionCard />)}
+                    submission.submissions.length>0? <div className='space-y-2'>
+                        {submission.submissions.map((item)=><SubmissionCard item={item} />)}
                     </div>:<div className=''>
                     <div className='text-center'>
                         No Submissions found

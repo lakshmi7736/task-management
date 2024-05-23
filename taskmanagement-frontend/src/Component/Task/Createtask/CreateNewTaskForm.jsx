@@ -2,14 +2,14 @@
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { Autocomplete, Button, Grid, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchTasksById, updateTask } from '../../../ReduxToolKit/TaskSlice';
+import { useDispatch } from 'react-redux';
+import { createTask } from '../../../ReduxToolKit/TaskSlice';
 
 
 
@@ -20,18 +20,15 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  outline:"none",
   boxShadow: 24,
   p: 4,
 };
 
 const tags=["Angular","React","Mern","Mean","Spring boot"];
 
-export default function EditTaskForm({item,handleClose,open}) {
-
+export default function CreateNewTaskForm({handleClose,open}) {
   const dispatch=useDispatch();
-  const {task}=useSelector(store=>store);
-
 const [formData,setFormData]=useState({
   title:"",
   image:"",
@@ -67,8 +64,8 @@ e.preventDefault();
 const {deadline}=formData;
 formData.deadline=formatDate(deadline);
 formData.tags=selectedTags;
+dispatch(createTask(formData));
 console.log(formData);
-dispatch(updateTask({id:item.id,updatedTaskdata:formData}))
 handleClose();
 }
 
@@ -88,16 +85,6 @@ const formatDate=(input)=>{
   return formatedDate;
 }
 
-
-useEffect(()=>{
-  console.log("itemId",item.id)
-dispatch(fetchTasksById(item.id));
-},[item.id]);
-
-useEffect(()=>{
-  if(task.taskDetails) setFormData(task.taskDetails);
-
-},[task.taskDetails])
 
   return (
     <div>
@@ -154,7 +141,7 @@ useEffect(()=>{
               <Grid item xs={12}>
                <Button fullWidth
                sx={{padding:".9rem"}} className='customeButton' type='submit' >
-                Update</Button>
+                Create</Button>
               </Grid> 
                 
               </Grid>
